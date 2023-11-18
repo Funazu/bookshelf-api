@@ -1,13 +1,16 @@
-import { Controller, Get, Param, Post, Body, Put, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Put, Delete, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { BooksService } from './books.service';
+import { CreateBookDto } from './dto/create-book.dto';
+import { UpdateBookDto } from './dto/update-book.dto';
+import { FilterBookDto } from './dto/filter-book.dto';
 
 @Controller('books')
 export class BooksController {
     constructor(private booksService: BooksService) { }
     @Get()
-    getBooks(@Query('title') title: string, @Query('author') author: string, @Query('category') category: string) {
+    getBooks(@Query() filter: FilterBookDto) {
 
-        return this.booksService.getBooks(title, author, category);
+        return this.booksService.getBooks(filter);
     }
 
     @Get('/:id')
@@ -17,13 +20,14 @@ export class BooksController {
 
     @Post()
     createBook(
-        @Body('title') title: string, @Body('author') author: string, @Body('category') category: string) {
-        return this.booksService.createBook(title, author, category);
+        @Body() payload: CreateBookDto) {
+        console.log(payload);
+        return this.booksService.createBook(payload);
     }
 
     @Put('/:id')
-    updateBook(@Param('id') id: string, @Body('title') title: string, @Body('author') author: string, @Body('category') category: string) {
-        return this.booksService.updateBook(id, title, author, category);
+    updateBook(@Param('id') id: string, @Body() payload: UpdateBookDto) {
+        return this.booksService.updateBook(id, payload);
     }
 
     @Delete('/:id')
